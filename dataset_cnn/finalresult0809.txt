@@ -1,0 +1,2 @@
+.\dataset_cnn\20191226\0\image0.fit	-1	
+.\dataset_cnn\20191226\0\image1.fit	-1	

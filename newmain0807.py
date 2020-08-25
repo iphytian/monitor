@@ -1,0 +1,187 @@
+# 整合四个相机的结果，得到总的结果
+# Integrate the results of the four cameras to get the final result
+
+import RF_result as svm
+import cnn_result as cnn
+import imagecutout as cutout
+import os
+import tensorflow as tf
+import numpy as np
+
+# 读取文件夹中的图片
+# Read the pictures in the folder
+def get_filelist(dir, Filelist):
+    if os.path.isfile(dir):
+        Filelist.append(dir)
+    elif os.path.isdir(dir):
+        for s in os.listdir(dir):
+            newDir = os.path.join(dir, s)
+            get_filelist(newDir, Filelist)
+    return Filelist
+
+final_result = []
+
+m = 0
+numall = 0
+Filelist = []
+class_result = []
+image_path='./dataset_cnn/20191226'  #读取文件存储路径 Read file storage path
+dir = image_path
+get_filelist(dir, Filelist)
+maxnumber = 1
+
+# 读取fit文件最大编号
+# Read the maximum number of the fit file
+for path in Filelist:
+    number = int(path[31:-4])
+    if number >= maxnumber:
+        maxnumber = number
+    else:
+        maxnumber = maxnumber
+
+# 循环读取各个相机中的数据得出结果
+# Read the data in each camera to get the result
+for num in range(maxnumber+1):
+    cam0_path = '.\\dataset_cnn\\20191226\\0\\image' + str(num) + '.fit'
+    cam1_path = '.\\dataset_cnn\\20191226\\1\\image' + str(num) + '.fit'
+    cam2_path = '.\\dataset_cnn\\20191226\\2\\image' + str(num) + '.fit'
+    cam3_path = '.\\dataset_cnn\\20191226\\3\\image' + str(num) + '.fit'
+    # num0 相机的结果
+    # num0 camera result
+    if os.path.exists(cam0_path) is False:
+        cam0_result = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+    else:
+        a = svm.svm_clf(cam0_path)
+        one_step_result = a[11]
+        if one_step_result == 0:
+            cam0_result = [[2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+        elif one_step_result == 2:
+            cam0_result = [[0.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+        else:
+            num = cutout.cutoutimage(cam0_path)
+            if num == 0:
+                cam0_result = [[2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+            elif num == 1:
+                pre = cnn.CNN_clf('.\\dataset_cnn\\0.png')
+                pre = np.insert(pre, 0, 0, axis=1)
+                pre = np.insert(pre, 0, 0, axis=1)
+                cam0_result = tf.add(pre,pre)
+            else:
+                pre1 = cnn.CNN_clf('.\\dataset_cnn\\0.png')
+                pre2 = cnn.CNN_clf('.\\dataset_cnn\\1.png')
+                pre3 = tf.add(pre1, pre2)
+                pre3 = np.insert(pre3, 0, 0, axis=1)
+                pre3 = np.insert(pre3, 0, 0, axis=1)
+                cam0_result = pre3
+
+    # num1 相机的结果
+    # num1 camera result
+    if os.path.exists(cam1_path) is False:
+        cam1_result = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+    else:
+        a = svm.svm_clf(cam1_path)
+        one_step_result = a[11]
+        if one_step_result == 0:
+            cam1_result = [[2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+        elif one_step_result == 2:
+            cam1_result = [[0.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+        else:
+            num = cutout.cutoutimage(cam1_path)
+            if num == 0:
+                cam1_result = [[2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+            elif num == 1:
+                pre = cnn.CNN_clf('.\\dataset_cnn\\0.png')
+                pre = np.insert(pre, 0, 0, axis=1)
+                pre = np.insert(pre, 0, 0, axis=1)
+                cam1_result = tf.add(pre,pre)
+            else:
+                pre1 = cnn.CNN_clf('.\\dataset_cnn\\0.png')
+                pre2 = cnn.CNN_clf('.\\dataset_cnn\\1.png')
+                pre3 = tf.add(pre1, pre2)
+                pre3 = np.insert(pre3, 0, 0, axis=1)
+                pre3 = np.insert(pre3, 0, 0, axis=1)
+                cam1_result = pre3
+
+    # num2 相机的结果
+    # num2 camera result
+    if os.path.exists(cam2_path) is False:
+        cam2_result = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+    else:
+        a = svm.svm_clf(cam2_path)
+        one_step_result = a[11]
+        if one_step_result == 0:
+            cam2_result = [[2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+        elif one_step_result == 2:
+            cam2_result = [[0.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+        else:
+            num = cutout.cutoutimage(cam2_path)
+            if num == 0:
+                cam2_result = [[2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+            elif num == 1:
+                pre = cnn.CNN_clf('.\\dataset_cnn\\0.png')
+                pre = np.insert(pre, 0, 0, axis=1)
+                pre = np.insert(pre, 0, 0, axis=1)
+                cam2_result = tf.add(pre,pre)
+            else:
+                pre1 = cnn.CNN_clf('.\\dataset_cnn\\0.png')
+                pre2 = cnn.CNN_clf('.\\dataset_cnn\\1.png')
+                pre3 = tf.add(pre1, pre2)
+                pre3 = np.insert(pre3, 0, 0, axis=1)
+                pre3 = np.insert(pre3, 0, 0, axis=1)
+                cam2_result = pre3
+
+    # num3 相机的结果
+    # num3 camera result
+    if os.path.exists(cam3_path) is False:
+        cam3_result = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+    else:
+        a = svm.svm_clf(cam3_path)
+        one_step_result = a[11]
+        if one_step_result == 0:
+            cam3_result = [[2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+        elif one_step_result == 2:
+            cam3_result = [[0.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+        else:
+            num = cutout.cutoutimage(cam3_path)
+            if num == 0:
+                cam3_result = [[2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+            elif num == 1:
+                pre = cnn.CNN_clf('.\\dataset_cnn\\0.png')
+                pre = np.insert(pre, 0, 0, axis=1)
+                pre = np.insert(pre, 0, 0, axis=1)
+                cam3_result = tf.add(pre, pre)
+            else:
+                pre1 = cnn.CNN_clf('.\\dataset_cnn\\0.png')
+                pre2 = cnn.CNN_clf('.\\dataset_cnn\\1.png')
+                pre3 = tf.add(pre1, pre2)
+                pre3 = np.insert(pre3, 0, 0, axis=1)
+                pre3 = np.insert(pre3, 0, 0, axis=1)
+                cam3_result = pre3
+
+    # 整合四个相机的结果
+    # final estimator（Result of integrating four cameras）
+    final_result_pre1 = tf.add(cam0_result, cam1_result)
+    final_result_pre2 = tf.add(cam2_result, cam3_result)
+    final_result_pre3 = tf.add(final_result_pre1, final_result_pre2)
+    print(final_result_pre3)
+    for i in range(len(final_result_pre3[0])):
+        numall = final_result_pre3[0][i] + numall
+    if numall == 0:
+        final_result = -1
+    else:
+        final_result_pre4 = tf.argmax(final_result_pre3, axis=1)
+        final_result = int(final_result_pre4)
+
+    class_result.append([cam0_path, final_result])
+    print(num)
+
+# 保存分类结果
+# Save final results
+output = open('.\\dataset_cnn\\finalresult0809.txt', 'w')
+
+for i in range(len(class_result)):
+    for j in range(len(class_result[i])):
+        output.write(str(class_result[i][j]))
+        output.write('\t')
+    output.write('\n')
+output.close()
