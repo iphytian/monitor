@@ -1,10 +1,10 @@
 # this method is aim at the telecope performance monitoring
-''' some thing important: 1、the picture and cutted image of our paper you can get in http:// '''
+''' something important: 1、the pictures and source images of our paper you can get in http:// '''
 
-newmain0807.py is main function of our method and final estimateor
+-newmain0807.py is the main function of our method and final estimator
 
-RF_result.py is initial classes session function
+-RF_result.py is initial classes session function
 
-imagecutout.py and cnn_result.py achieve the second classes seesion function
+-imagecutout.py and cnn_result.py achieve the second classes session function
 
-feature_selection.py is used for the number of feature selection
+-feature_selection.py is used for the number of feature selection
