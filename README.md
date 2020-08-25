@@ -3,7 +3,7 @@
 
 newmain0807.py is main function of our method and final estimateor
 
-RF_result is initial classes session function
+RF_result.py is initial classes session function
 
 imagecutout.py and cnn_result.py achieve the second classes seesion function
 
